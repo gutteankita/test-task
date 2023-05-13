@@ -128,3 +128,18 @@ def update_runtime_minutes(request):
     # return a JSON response indicating success
     return JsonResponse({'status': 'success'})
 
+
+def genre_movies_with_subtotals(request):
+    # execute the SQL query to get a list of all movies genre-wise with Subtotals of their numVotes.
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT test_task.app_movie.genres, test_task.app_movie.primaryTitle, COUNT(numVotes) AS numVotes_count, SUM(numVotes) AS total_votes
+            FROM test_task.app_movie, test_task.app_rating WHERE test_task.app_movie.tconst = test_task.app_rating.movie_id
+            GROUP BY test_task.app_movie.genres
+            ORDER BY test_task.app_movie.genres;
+        """)
+
+    # return a JSON response indicating success
+    return JsonResponse({'status': 'success'})
+
+
